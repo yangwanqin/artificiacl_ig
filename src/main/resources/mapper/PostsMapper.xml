@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanggao.artificial_ig.mapper.PostsMapper">
+  <resultMap id="BaseResultMap" type="com.wanggao.artificial_ig.bean.Posts">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="author_id" jdbcType="BIGINT" property="authorId" />
+    <result column="category_id" jdbcType="BIGINT" property="categoryId" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, title, content, author_id, category_id, created_at, updated_at
+  </sql>
+  <delete id="deletePost" parameterType="com.wanggao.artificial_ig.bean.Posts">
+    DELETE FROM wanggao.posts WHERE id = #{postId} AND author_id = #{authorId}
+  </delete>
+  <insert id="insertPost" parameterType="com.wanggao.artificial_ig.bean.Posts">
+    INSERT INTO wanggao.posts (title, content, author_id, category_id, created_at, updated_at)
+            VALUES (#{title}, #{content}, #{authorId}, #{categoryId}, NOW(), NOW())
+  </insert>
+  <select id="getPostsByCategoryId" resultType="com.wanggao.artificial_ig.bean.Posts">
+    SELECT id, title, content, author_id, category_id, created_at, updated_at FROM wanggao.posts WHERE category_id = #{categoryId}
+  </select>
+  <select id="getPostsByTagId" resultType="com.wanggao.artificial_ig.bean.Posts">
+    SELECT p.id, p.title, p.content, p.author_id, p.category_id, p.created_at, p.updated_at
+            FROM wanggao.posts p
+            JOIN wanggao.post_tags pt ON p.id = pt.post_id
+            WHERE pt.tag_id = #{tagId}
+  </select>
+  <select id="getPostsByAuthorId" resultType="com.wanggao.artificial_ig.bean.Posts">
+    SELECT id, title, content, author_id, category_id, created_at, updated_at FROM wanggao.posts WHERE author_id = #{authorId}
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from posts
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from posts
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.wanggao.artificial_ig.bean.Posts" useGeneratedKeys="true">
+    insert into posts (title, content, author_id, 
+      category_id, created_at, updated_at
+      )
+    values (#{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{authorId,jdbcType=BIGINT}, 
+      #{categoryId,jdbcType=BIGINT}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.wanggao.artificial_ig.bean.Posts" useGeneratedKeys="true">
+    insert into posts
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="title != null">
+        title,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="authorId != null">
+        author_id,
+      </if>
+      <if test="categoryId != null">
+        category_id,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="updatedAt != null">
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="authorId != null">
+        #{authorId,jdbcType=BIGINT},
+      </if>
+      <if test="categoryId != null">
+        #{categoryId,jdbcType=BIGINT},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wanggao.artificial_ig.bean.Posts">
+    update posts
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="authorId != null">
+        author_id = #{authorId,jdbcType=BIGINT},
+      </if>
+      <if test="categoryId != null">
+        category_id = #{categoryId,jdbcType=BIGINT},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wanggao.artificial_ig.bean.Posts">
+    update posts
+    set title = #{title,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      author_id = #{authorId,jdbcType=BIGINT},
+      category_id = #{categoryId,jdbcType=BIGINT},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
